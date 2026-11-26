@@ -88,16 +88,25 @@
       margin: 0 auto 24px;
     }
 
-    /* Search Bar */
-    .search-box {
-      max-width: 520px;
+    /* Search & Action Row */
+    .hero-actions {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      max-width: 680px;
       margin: 0 auto;
+      flex-wrap: wrap;
+    }
+
+    .search-box {
+      flex: 1 1 320px;
       position: relative;
     }
 
     .search-box input {
       width: 100%;
-      padding: 14px 48px 14px 20px;
+      padding: 14px 44px 14px 20px;
       border-radius: 999px;
       border: none;
       font-size: 0.95rem;
@@ -128,6 +137,29 @@
 
     .search-box button.visible {
       display: block;
+    }
+
+    .add-recipe-btn {
+      flex: 0 0 auto;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 14px 22px;
+      border-radius: 999px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(200, 90, 50, 0.35);
+      transition: background 0.2s, transform 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .add-recipe-btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
     }
 
     /* Sticky Category Nav */
@@ -223,9 +255,10 @@
     .view-controls {
       display: flex;
       gap: 8px;
+      flex-wrap: wrap;
     }
 
-    .toggle-all-btn {
+    .control-btn {
       background: var(--surface);
       border: 1px solid var(--border);
       padding: 6px 12px;
@@ -235,10 +268,12 @@
       color: var(--text);
       cursor: pointer;
       font-family: inherit;
+      transition: background 0.15s, border-color 0.15s;
     }
 
-    .toggle-all-btn:hover {
+    .control-btn:hover {
       background: var(--surface-alt);
+      border-color: #cfc5b8;
     }
 
     /* Category Section */
@@ -322,11 +357,16 @@
       transition: transform 0.2s ease, box-shadow 0.2s ease;
       display: flex;
       flex-direction: column;
+      position: relative;
     }
 
     .recipe-card:hover {
       transform: translateY(-3px);
       box-shadow: var(--shadow-hover);
+    }
+
+    .recipe-card.custom-card {
+      border-color: #e4b5a3;
     }
 
     .card-thumb {
@@ -359,14 +399,45 @@
       line-height: 1.35;
     }
 
-    .sub-tag {
+    .tag-group {
+      display: flex;
+      align-items: center;
+      gap: 5px;
       flex-shrink: 0;
+    }
+
+    .sub-tag {
       font-size: 0.75rem;
       font-weight: 600;
       background: var(--primary-light);
       color: var(--primary-dark);
       padding: 3px 9px;
       border-radius: 6px;
+    }
+
+    .custom-badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      background: #2c241e;
+      color: #ffd7c7;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    .delete-custom-btn {
+      background: none;
+      border: 1px solid #e5d8d3;
+      color: #9e4120;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .delete-custom-btn:hover {
+      background: #fdf1ec;
     }
 
     .ingredients-box {
@@ -389,6 +460,7 @@
     .ingredients-text {
       color: #3c3834;
       line-height: 1.55;
+      white-space: pre-line;
     }
 
     .steps-box {
@@ -413,6 +485,7 @@
     .single-step {
       margin-top: 4px;
       line-height: 1.65;
+      white-space: pre-line;
     }
 
     .empty-state {
@@ -434,6 +507,213 @@
       font-size: 0.92rem;
     }
 
+    /* Modal Styles */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(24, 20, 18, 0.58);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background: var(--surface);
+      width: 100%;
+      max-width: 560px;
+      max-height: 90vh;
+      overflow-y: auto;
+      border-radius: 20px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+      padding: 26px 28px 28px;
+      animation: modalPop 0.2s ease;
+    }
+
+    @keyframes modalPop {
+      from { opacity: 0; transform: translateY(10px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .modal-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-top h2 {
+      font-size: 1.3rem;
+      font-weight: 800;
+    }
+
+    .modal-close {
+      background: var(--surface-alt);
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      font-size: 1rem;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+
+    .modal-close:hover {
+      background: #e6dfd5;
+      color: var(--text);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+
+    .form-group label span.req {
+      color: var(--primary);
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 0.92rem;
+      color: var(--text);
+      background: #fcfbf9;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--primary);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(200, 90, 50, 0.14);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      line-height: 1.55;
+    }
+
+    .form-hint {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .emoji-picker {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .emoji-opt {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #fff;
+      font-size: 1.15rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .emoji-opt.selected {
+      border-color: var(--primary);
+      background: var(--primary-light);
+      box-shadow: 0 0 0 2px rgba(200, 90, 50, 0.2);
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+
+    .btn-cancel {
+      background: var(--surface-alt);
+      border: none;
+      padding: 11px 18px;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .btn-submit {
+      background: var(--primary);
+      border: none;
+      padding: 11px 22px;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .btn-submit:hover {
+      background: var(--primary-dark);
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #2c241e;
+      color: #fff;
+      padding: 12px 22px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.25s ease;
+      z-index: 2000;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
     footer {
       text-align: center;
       padding: 28px 20px;
@@ -453,6 +733,9 @@
       .recipe-grid {
         grid-template-columns: 1fr;
       }
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -462,10 +745,13 @@
     <div class="header-inner">
       <span class="badge">PERSONAL RECIPE ARCHIVE</span>
       <h1>나만의 실전 레시피 북</h1>
-      <p>검증된 황금비율과 해보고 싶은 핵심 레시피를 9개 카테고리로 정리한 요리 아카이브</p>
-      <div class="search-box">
-        <input type="text" id="searchInput" placeholder="요리명, 식재료(예: 삼겹살, 마늘, 새우, 버터) 검색..." />
-        <button id="clearSearch" title="검색어 지우기">✕</button>
+      <p>검증된 황금비율과 해보고 싶은 핵심 레시피를 9개 카테고리로 정리하고 직접 추가하는 요리 아카이브</p>
+      <div class="hero-actions">
+        <div class="search-box">
+          <input type="text" id="searchInput" placeholder="요리명, 식재료(예: 삼겹살, 마늘, 새우, 버터) 검색..." />
+          <button id="clearSearch" title="검색어 지우기">✕</button>
+        </div>
+        <button class="add-recipe-btn" id="openModalBtn">+ 새 레시피 추가</button>
       </div>
     </div>
   </header>
@@ -478,9 +764,10 @@
 
   <main>
     <div class="stats-bar">
-      <div>현재 표시된 레시피: <strong id="visibleCount">0</strong>개</div>
+      <div>현재 표시된 레시피: <strong id="visibleCount">0</strong>개 (직접 추가: <strong id="customCount">0</strong>개)</div>
       <div class="view-controls">
-        <button class="toggle-all-btn" id="toggleImagesBtn">대표 이미지 숨기기</button>
+        <button class="control-btn" id="exportHtmlBtn" title="추가한 레시피가 영구 반영된 HTML 파일로 다시 저장">변경된 HTML 파일 저장</button>
+        <button class="control-btn" id="toggleImagesBtn">대표 이미지 숨기기</button>
       </div>
     </div>
 
@@ -488,16 +775,77 @@
 
     <div class="empty-state" id="emptyState">
       <h3>일치하는 레시피가 없습니다</h3>
-      <p>다른 재료명이나 요리 이름으로 다시 검색해 보세요.</p>
+      <p>다른 재료명이나 요리 이름으로 다시 검색하거나, 상단의 '+ 새 레시피 추가' 버튼으로 직접 등록해 보세요.</p>
     </div>
   </main>
 
+  <!-- 새 레시피 추가 모달 -->
+  <div class="modal-backdrop" id="recipeModal">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-top">
+        <h2 id="modalTitle">새 레시피 추가하기</h2>
+        <button class="modal-close" id="closeModalBtn" title="닫기">✕</button>
+      </div>
+      <form id="recipeForm">
+        <div class="form-grid">
+          <div class="form-group" style="margin-bottom:0;">
+            <label for="inputCategory">카테고리 선택 <span class="req">*</span></label>
+            <select id="inputCategory" required></select>
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label for="inputTag">세부 태그 (선택)</label>
+            <input type="text" id="inputTag" placeholder="예: 볶음밥, 에어프라이어, 안주" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="inputName">요리 이름 <span class="req">*</span></label>
+          <input type="text" id="inputName" placeholder="예: 명란 아보카도 덮밥" required />
+        </div>
+
+        <div class="form-group">
+          <label>대표 아이콘 선택</label>
+          <div class="emoji-picker" id="emojiPicker">
+            <button type="button" class="emoji-opt selected" data-emoji="🍳">🍳</button>
+            <button type="button" class="emoji-opt" data-emoji="🍚">🍚</button>
+            <button type="button" class="emoji-opt" data-emoji="🥘">🥘</button>
+            <button type="button" class="emoji-opt" data-emoji="🍜">🍜</button>
+            <button type="button" class="emoji-opt" data-emoji="🥩">🥩</button>
+            <button type="button" class="emoji-opt" data-emoji="🍗">🍗</button>
+            <button type="button" class="emoji-opt" data-emoji="🍤">🍤</button>
+            <button type="button" class="emoji-opt" data-emoji="🥗">🥗</button>
+            <button type="button" class="emoji-opt" data-emoji="🥫">🥫</button>
+            <button type="button" class="emoji-opt" data-emoji="🍝">🍝</button>
+            <button type="button" class="emoji-opt" data-emoji="🍰">🍰</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="inputIngredients">재료 및 양념 <span class="req">*</span></label>
+          <textarea id="inputIngredients" rows="3" placeholder="예: 밥 1공기, 명란젓 1덩이, 아보카도 1/2개, 달걀노른자 1개, 참기름 1T, 김가루, 통깨" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="inputSteps">조리법 <span class="req">*</span></label>
+          <textarea id="inputSteps" rows="5" placeholder="줄바꿈(Enter)으로 구분해서 적으면 번호가 자동으로 매겨집니다.&#10;예:&#10;아보카도는 씨를 빼고 먹기 좋은 크기로 썹니다.&#10;명란젓은 껍질을 제거하고 알만 발라냅니다.&#10;따뜻한 밥 위에 재료를 올리고 참기름과 노른자를 얹어 비벼 먹습니다." required></textarea>
+          <div class="form-hint">줄바꿈으로 단계를 나누면 1, 2, 3 순서대로 깔끔하게 표시됩니다.</div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" id="cancelModalBtn">취소</button>
+          <button type="submit" class="btn-submit">레시피 저장하기</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">저장되었습니다!</div>
+
   <footer>
-    레시피.pdf 기반 개인 요리 아카이브 · 오프라인 단독 실행 지원 HTML
+    레시피.pdf 기반 개인 요리 아카이브 · 브라우저 자동 저장(LocalStorage) 및 HTML 내보내기 지원
   </footer>
 
   <script>
-    // SVG 데이터 URI 생성기 (외부 네트워크 끊김 없이 선명한 일러스트 대표 이미지 제공)
     function makeFoodIllustration(bg1, bg2, emoji, label) {
       const svg = `
         <svg xmlns="http://www.w3.org/2000/svg" width="600" height="340" viewBox="0 0 600 340">
@@ -517,12 +865,13 @@
       return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg.trim());
     }
 
-    const recipeData = [
+    const baseRecipeData = [
       {
         id: "cat-1",
         num: "CATEGORY 01",
         title: "밥·한 그릇 식사",
         desc: "볶음밥, 솥밥, 덮밥, 비빔밥까지 든든하게 한 끼를 완성하는 메인 밥 요리",
+        themeColors: ["#d97724", "#9a4412"],
         image: makeFoodIllustration("#d97724", "#9a4412", "🍚", "RICE & ONE-BOWL MEALS"),
         recipes: [
           {
@@ -591,6 +940,7 @@
         num: "CATEGORY 02",
         title: "국·찌개·전골",
         desc: "진한 국물 맛의 짜글이·된장찌개부터 전골, 시원한 냉국·온육수까지",
+        themeColors: ["#c84b31", "#7a2312"],
         image: makeFoodIllustration("#c84b31", "#7a2312", "🥘", "SOUPS, STEWS & HOT POTS"),
         recipes: [
           {
@@ -656,6 +1006,7 @@
         num: "CATEGORY 03",
         title: "면류 및 분식",
         desc: "불맛 나는 짬뽕라면부터 국물·기름 떡볶이, 이색 그릇 샤오롱바오까지",
+        themeColors: ["#d64535", "#8a1f14"],
         image: makeFoodIllustration("#d64535", "#8a1f14", "🍜", "NOODLES & STREET SNACKS"),
         recipes: [
           {
@@ -710,6 +1061,7 @@
         num: "CATEGORY 04",
         title: "고기 요리 (돼지고기·소고기)",
         desc: "제육·삼겹살 구이부터 보쌈·수육·족발, 막창, 소고기 육전까지 총망라",
+        themeColors: ["#8f3524", "#4d170d"],
         image: makeFoodIllustration("#8f3524", "#4d170d", "🥓", "PORK & BEEF SPECIALTIES"),
         recipes: [
           {
@@ -827,6 +1179,7 @@
         num: "CATEGORY 05",
         title: "닭고기 요리",
         desc: "오븐 구이부터 에어프라이어 윙봉, 바삭한 전분 프라이드 치킨까지",
+        themeColors: ["#d67a28", "#87440c"],
         image: makeFoodIllustration("#d67a28", "#87440c", "🍗", "CHICKEN & WINGS"),
         recipes: [
           {
@@ -880,6 +1233,7 @@
         num: "CATEGORY 06",
         title: "해산물 요리",
         desc: "자숙새우와 칵테일 새우로 뚝딱 만드는 중식·양식 새우 요리 3종",
+        themeColors: ["#d95b43", "#8c2b19"],
         image: makeFoodIllustration("#d95b43", "#8c2b19", "🍤", "SEAFOOD & SHRIMP"),
         recipes: [
           {
@@ -921,6 +1275,7 @@
         num: "CATEGORY 07",
         title: "채소·절임 및 밑반찬",
         desc: "오이무침, 겉절이, 장아찌·라페부터 일본식 달걀말이·건두부 반찬까지",
+        themeColors: ["#3f8c4f", "#1e5229"],
         image: makeFoodIllustration("#3f8c4f", "#1e5229", "🥒", "VEGETABLES, PICKLES & SIDES"),
         recipes: [
           {
@@ -1069,6 +1424,7 @@
         num: "CATEGORY 08",
         title: "양념장·디핑 소스",
         desc: "만능 국수장, 치킨·탄탄멘 소스, 육회 양념, 백숙 소스 3종 & 깻잎 페스토",
+        themeColors: ["#b8432e", "#661b0e"],
         image: makeFoodIllustration("#b8432e", "#661b0e", "🥫", "SAUCES, DIPS & MARINADES"),
         recipes: [
           {
@@ -1158,6 +1514,7 @@
         num: "CATEGORY 09",
         title: "양식·브런치 & 디저트",
         desc: "아웃백 스타일 인기 사이드·파스타부터 달콤한 감자치즈케이크까지",
+        themeColors: ["#c98a36", "#784c12"],
         image: makeFoodIllustration("#c98a36", "#784c12", "🍝", "WESTERN, BRUNCH & DESSERT"),
         recipes: [
           {
@@ -1241,36 +1598,126 @@
       }
     ];
 
+    // HTML 내보내기 시 병합될 영구 사용자 레시피 배열
+    const embeddedCustomRecipes = [];
+
+    const STORAGE_KEY = "my_personal_custom_recipes_v1";
+
+    function loadCustomRecipes() {
+      let saved = [];
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) saved = JSON.parse(raw);
+      } catch (e) {
+        console.warn("LocalStorage read failed", e);
+      }
+      // embeddedCustomRecipes와 localStorage 중복 제거 병합
+      const map = new Map();
+      [...embeddedCustomRecipes, ...saved].forEach(item => {
+        map.set(item.uid, item);
+      });
+      return Array.from(map.values());
+    }
+
+    function saveCustomRecipes(list) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+      } catch (e) {
+        console.warn("LocalStorage save failed", e);
+      }
+    }
+
+    let customRecipes = loadCustomRecipes();
+
     const tabsEl = document.getElementById("categoryTabs");
     const containerEl = document.getElementById("recipeContainer");
     const searchInput = document.getElementById("searchInput");
     const clearSearchBtn = document.getElementById("clearSearch");
     const totalCountEl = document.getElementById("totalCount");
     const visibleCountEl = document.getElementById("visibleCount");
+    const customCountEl = document.getElementById("customCount");
     const emptyStateEl = document.getElementById("emptyState");
     const toggleImagesBtn = document.getElementById("toggleImagesBtn");
+    const exportHtmlBtn = document.getElementById("exportHtmlBtn");
+
+    // Modal elements
+    const recipeModal = document.getElementById("recipeModal");
+    const openModalBtn = document.getElementById("openModalBtn");
+    const closeModalBtn = document.getElementById("closeModalBtn");
+    const cancelModalBtn = document.getElementById("cancelModalBtn");
+    const recipeForm = document.getElementById("recipeForm");
+    const inputCategory = document.getElementById("inputCategory");
+    const inputTag = document.getElementById("inputTag");
+    const inputName = document.getElementById("inputName");
+    const inputIngredients = document.getElementById("inputIngredients");
+    const inputSteps = document.getElementById("inputSteps");
+    const emojiPicker = document.getElementById("emojiPicker");
+    const toastEl = document.getElementById("toast");
 
     let activeCategory = "all";
     let showImages = true;
+    let selectedEmoji = "🍳";
 
-    // 초기 탭 및 총 개수 세팅
-    const totalRecipes = recipeData.reduce((acc, cat) => acc + cat.recipes.length, 0);
-    totalCountEl.textContent = totalRecipes;
+    function showToast(msg) {
+      toastEl.textContent = msg;
+      toastEl.classList.add("show");
+      setTimeout(() => toastEl.classList.remove("show"), 2600);
+    }
 
-    recipeData.forEach((cat, idx) => {
-      const btn = document.createElement("button");
-      btn.className = "tab-btn";
-      btn.dataset.cat = cat.id;
-      btn.innerHTML = `${idx + 1}. ${cat.title} <span class="tab-count">${cat.recipes.length}</span>`;
-      tabsEl.appendChild(btn);
+    // 카테고리 셀렉트 옵션 채우기
+    baseRecipeData.forEach((cat, idx) => {
+      const opt = document.createElement("option");
+      opt.value = cat.id;
+      opt.textContent = `${idx + 1}. ${cat.title}`;
+      inputCategory.appendChild(opt);
     });
 
+    function getMergedData() {
+      return baseRecipeData.map(cat => {
+        const added = customRecipes.filter(c => c.categoryId === cat.id);
+        return {
+          ...cat,
+          recipes: [...added, ...cat.recipes]
+        };
+      });
+    }
+
+    function updateTabsAndCounts() {
+      const merged = getMergedData();
+      const total = merged.reduce((acc, cat) => acc + cat.recipes.length, 0);
+      totalCountEl.textContent = total;
+      customCountEl.textContent = customRecipes.length;
+
+      // 기존 카테고리 탭 갱신
+      const existingBtns = tabsEl.querySelectorAll(".tab-btn[data-cat]:not([data-cat='all'])");
+      existingBtns.forEach(b => b.remove());
+
+      merged.forEach((cat, idx) => {
+        const btn = document.createElement("button");
+        btn.className = "tab-btn" + (activeCategory === cat.id ? " active" : "");
+        btn.dataset.cat = cat.id;
+        btn.innerHTML = `${idx + 1}. ${cat.title} <span class="tab-count">${cat.recipes.length}</span>`;
+        tabsEl.appendChild(btn);
+      });
+    }
+
+    function escapeHtml(str) {
+      return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
     function renderRecipes() {
+      updateTabsAndCounts();
+      const merged = getMergedData();
       const keyword = searchInput.value.trim().toLowerCase();
       containerEl.innerHTML = "";
       let count = 0;
 
-      recipeData.forEach(cat => {
+      merged.forEach(cat => {
         if (activeCategory !== "all" && activeCategory !== cat.id) return;
 
         const filtered = cat.recipes.filter(r => {
@@ -1299,22 +1746,27 @@
           </div>
           <div class="recipe-grid">
             ${filtered.map(r => {
-              const thumbSrc = makeFoodIllustration(r.colors[0], r.colors[1], r.emoji, r.name);
+              const colors = r.colors || cat.themeColors;
+              const thumbSrc = makeFoodIllustration(colors[0], colors[1], r.emoji || "🍳", r.name);
               const stepsHtml = r.steps.length > 1
-                ? `<ol class="steps-list">${r.steps.map(s => `<li>${s}</li>`).join("")}</ol>`
-                : `<p class="single-step">${r.steps[0]}</p>`;
+                ? `<ol class="steps-list">${r.steps.map(s => `<li>${escapeHtml(s)}</li>`).join("")}</ol>`
+                : `<p class="single-step">${escapeHtml(r.steps[0])}</p>`;
 
               return `
-                <article class="recipe-card">
-                  ${showImages ? `<img class="card-thumb" src="${thumbSrc}" alt="${r.name}" loading="lazy" />` : ""}
+                <article class="recipe-card ${r.isCustom ? "custom-card" : ""}">
+                  ${showImages ? `<img class="card-thumb" src="${thumbSrc}" alt="${escapeHtml(r.name)}" loading="lazy" />` : ""}
                   <div class="card-body">
                     <div class="card-header">
-                      <h3 class="card-title">${r.name}</h3>
-                      <span class="sub-tag">${r.tag}</span>
+                      <h3 class="card-title">${escapeHtml(r.name)}</h3>
+                      <div class="tag-group">
+                        ${r.isCustom ? `<span class="custom-badge">MY</span>` : ""}
+                        ${r.tag ? `<span class="sub-tag">${escapeHtml(r.tag)}</span>` : ""}
+                        ${r.isCustom ? `<button type="button" class="delete-custom-btn" data-uid="${r.uid}" title="삭제">삭제</button>` : ""}
+                      </div>
                     </div>
                     <div class="ingredients-box">
                       <span class="section-label">재료 및 양념</span>
-                      <p class="ingredients-text">${r.ingredients}</p>
+                      <p class="ingredients-text">${escapeHtml(r.ingredients)}</p>
                     </div>
                     <div class="steps-box">
                       <span class="section-label">조리법</span>
@@ -1334,6 +1786,7 @@
       clearSearchBtn.classList.toggle("visible", keyword.length > 0);
     }
 
+    // 탭 전환
     tabsEl.addEventListener("click", (e) => {
       const btn = e.target.closest(".tab-btn");
       if (!btn) return;
@@ -1344,6 +1797,7 @@
       window.scrollTo({ top: document.querySelector(".nav-wrapper").offsetTop, behavior: "smooth" });
     });
 
+    // 검색
     searchInput.addEventListener("input", renderRecipes);
 
     clearSearchBtn.addEventListener("click", () => {
@@ -1352,10 +1806,116 @@
       searchInput.focus();
     });
 
+    // 이미지 토글
     toggleImagesBtn.addEventListener("click", () => {
       showImages = !showImages;
       toggleImagesBtn.textContent = showImages ? "대표 이미지 숨기기" : "대표 이미지 보기";
       renderRecipes();
+    });
+
+    // 모달 열기/닫기
+    function openModal() {
+      if (activeCategory !== "all") {
+        inputCategory.value = activeCategory;
+      }
+      recipeModal.classList.add("open");
+      setTimeout(() => inputName.focus(), 50);
+    }
+
+    function closeModal() {
+      recipeModal.classList.remove("open");
+    }
+
+    openModalBtn.addEventListener("click", openModal);
+    closeModalBtn.addEventListener("click", closeModal);
+    cancelModalBtn.addEventListener("click", closeModal);
+    recipeModal.addEventListener("click", (e) => {
+      if (e.target === recipeModal) closeModal();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && recipeModal.classList.contains("open")) closeModal();
+    });
+
+    // 이모지 선택
+    emojiPicker.addEventListener("click", (e) => {
+      const btn = e.target.closest(".emoji-opt");
+      if (!btn) return;
+      emojiPicker.querySelectorAll(".emoji-opt").forEach(b => b.classList.remove("selected"));
+      btn.classList.add("selected");
+      selectedEmoji = btn.dataset.emoji;
+    });
+
+    // 새 레시피 저장
+    recipeForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const categoryId = inputCategory.value;
+      const catObj = baseRecipeData.find(c => c.id === categoryId);
+      const name = inputName.value.trim();
+      const tag = inputTag.value.trim() || "나만의 레시피";
+      const ingredients = inputIngredients.value.trim();
+      const rawSteps = inputSteps.value.trim();
+
+      const steps = rawSteps
+        .split(/\r?\n/)
+        .map(line => line.replace(/^\d+[.)]\s*/, "").trim())
+        .filter(Boolean);
+
+      const newRecipe = {
+        uid: "custom-" + Date.now(),
+        isCustom: true,
+        categoryId,
+        name,
+        tag,
+        emoji: selectedEmoji,
+        colors: catObj ? catObj.themeColors : ["#c85a32", "#8f3524"],
+        ingredients,
+        steps: steps.length > 0 ? steps : [rawSteps]
+      };
+
+      customRecipes.unshift(newRecipe);
+      saveCustomRecipes(customRecipes);
+
+      recipeForm.reset();
+      emojiPicker.querySelectorAll(".emoji-opt").forEach((b, i) => {
+        b.classList.toggle("selected", i === 0);
+      });
+      selectedEmoji = "🍳";
+
+      closeModal();
+      renderRecipes();
+      showToast(`'${name}' 레시피가 추가되었습니다!`);
+    });
+
+    // 사용자 추가 레시피 삭제
+    containerEl.addEventListener("click", (e) => {
+      const delBtn = e.target.closest(".delete-custom-btn");
+      if (!delBtn) return;
+      const uid = delBtn.dataset.uid;
+      if (!confirm("직접 추가한 이 레시피를 삭제할까요?")) return;
+      customRecipes = customRecipes.filter(r => r.uid !== uid);
+      saveCustomRecipes(customRecipes);
+      renderRecipes();
+      showToast("레시피가 삭제되었습니다.");
+    });
+
+    // 추가한 레시피를 포함한 새 HTML 파일 다운로드
+    exportHtmlBtn.addEventListener("click", () => {
+      const currentHtml = document.documentElement.outerHTML;
+      const serialized = JSON.stringify(customRecipes, null, 2);
+      const updatedHtml = "<!DOCTYPE html>\n" + currentHtml.replace(
+        /const embeddedCustomRecipes = \[[\s\S]*?\];/,
+        `const embeddedCustomRecipes = ${serialized};`
+      );
+      const blob = new Blob([updatedHtml], { type: "text/html;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "recipe_book_updated.html";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast("추가된 레시피가 반영된 HTML 파일이 다운로드되었습니다.");
     });
 
     renderRecipes();
