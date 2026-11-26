@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>나만의 레시피 북 | 9개 카테고리 컬렉션</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #faf8f5;
+      --surface: #ffffff;
+      --surface-alt: #f3efe9;
+      --primary: #c85a32;
+      --primary-light: #fdf1ec;
+      --primary-dark: #9e4120;
+      --text: #22201e;
+      --text-muted: #68625c;
+      --border: #e6dfd5;
+      --shadow: 0 4px 18px rgba(34, 32, 30, 0.06);
+      --shadow-hover: 0 10px 28px rgba(34, 32, 30, 0.12);
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Header & Hero */
+    header {
+      background: linear-gradient(135deg, #2c241e 0%, #44352b 100%);
+      color: #fff;
+      padding: 44px 20px 36px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 80% 20%, rgba(200, 90, 50, 0.25), transparent 60%);
+      pointer-events: none;
+    }
+
+    .header-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.14);
+      color: #ffd7c7;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+      letter-spacing: 0.03em;
+    }
+
+    header h1 {
+      font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    header p {
+      color: #d8cfc6;
+      font-size: 0.98rem;
+      max-width: 580px;
+      margin: 0 auto 24px;
+    }
+
+    /* Search Bar */
+    .search-box {
+      max-width: 520px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 14px 48px 14px 20px;
+      border-radius: 999px;
+      border: none;
+      font-size: 0.95rem;
+      font-family: inherit;
+      background: #fff;
+      color: var(--text);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+      outline: none;
+      transition: box-shadow 0.2s;
+    }
+
+    .search-box input:focus {
+      box-shadow: 0 0 0 3px rgba(200, 90, 50, 0.45), 0 6px 20px rgba(0, 0, 0, 0.18);
+    }
+
+    .search-box button {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: none;
+    }
+
+    .search-box button.visible {
+      display: block;
+    }
+
+    /* Sticky Category Nav */
+    .nav-wrapper {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(250, 248, 245, 0.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 16px;
+    }
+
+    .category-tabs {
+      max-width: 1120px;
+      margin: 0 auto;
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      padding-bottom: 2px;
+    }
+
+    .category-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tab-btn {
+      flex: 0 0 auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 600;
+      padding: 8px 15px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tab-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+      box-shadow: 0 3px 10px rgba(200, 90, 50, 0.25);
+    }
+
+    .tab-count {
+      font-size: 0.75rem;
+      opacity: 0.85;
+      background: rgba(0, 0, 0, 0.08);
+      padding: 1px 6px;
+      border-radius: 999px;
+    }
+
+    .tab-btn.active .tab-count {
+      background: rgba(255, 255, 255, 0.22);
+    }
+
+    /* Main Container */
+    main {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 32px 20px 80px;
+    }
+
+    .stats-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .stats-bar strong {
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .view-controls {
+      display: flex;
+      gap: 8px;
+    }
+
+    .toggle-all-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .toggle-all-btn:hover {
+      background: var(--surface-alt);
+    }
+
+    /* Category Section */
+    .category-section {
+      margin-bottom: 52px;
+      scroll-margin-top: 76px;
+    }
+
+    .category-banner {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      background: var(--surface);
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      margin-bottom: 22px;
+    }
+
+    .category-img-wrap {
+      position: relative;
+      min-height: 145px;
+      background: #e9e2d8;
+      overflow: hidden;
+    }
+
+    .category-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.4s ease;
+    }
+
+    .category-banner:hover .category-img-wrap img {
+      transform: scale(1.04);
+    }
+
+    .category-info {
+      padding: 22px 26px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .category-num {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 4px;
+    }
+
+    .category-info h2 {
+      font-size: 1.45rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+
+    .category-info p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    /* Recipe Grid */
+    .recipe-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+      gap: 20px;
+    }
+
+    /* Recipe Card */
+    .recipe-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .recipe-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .card-thumb {
+      width: 100%;
+      height: 170px;
+      object-fit: cover;
+      background: var(--surface-alt);
+      display: block;
+    }
+
+    .card-body {
+      padding: 20px 22px 22px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .card-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.35;
+    }
+
+    .sub-tag {
+      flex-shrink: 0;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      padding: 3px 9px;
+      border-radius: 6px;
+    }
+
+    .ingredients-box {
+      background: var(--surface-alt);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 14px;
+      font-size: 0.87rem;
+    }
+
+    .section-label {
+      display: inline-block;
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-bottom: 4px;
+      letter-spacing: 0.02em;
+    }
+
+    .ingredients-text {
+      color: #3c3834;
+      line-height: 1.55;
+    }
+
+    .steps-box {
+      font-size: 0.91rem;
+      color: #2f2c29;
+      flex: 1;
+    }
+
+    .steps-list {
+      padding-left: 18px;
+      margin-top: 4px;
+    }
+
+    .steps-list li {
+      margin-bottom: 6px;
+    }
+
+    .steps-list li:last-child {
+      margin-bottom: 0;
+    }
+
+    .single-step {
+      margin-top: 4px;
+      line-height: 1.65;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 64px 20px;
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px dashed var(--border);
+      display: none;
+    }
+
+    .empty-state h3 {
+      font-size: 1.2rem;
+      margin-bottom: 6px;
+    }
+
+    .empty-state p {
+      color: var(--text-muted);
+      font-size: 0.92rem;
+    }
+
+    footer {
+      text-align: center;
+      padding: 28px 20px;
+      color: var(--text-muted);
+      font-size: 0.84rem;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    @media (max-width: 680px) {
+      .category-banner {
+        grid-template-columns: 1fr;
+      }
+      .category-img-wrap {
+        height: 160px;
+      }
+      .recipe-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <span class="badge">PERSONAL RECIPE ARCHIVE</span>
+      <h1>나만의 실전 레시피 북</h1>
+      <p>검증된 황금비율과 해보고 싶은 핵심 레시피를 9개 카테고리로 정리한 요리 아카이브</p>
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="요리명, 식재료(예: 삼겹살, 마늘, 새우, 버터) 검색..." />
+        <button id="clearSearch" title="검색어 지우기">✕</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="nav-wrapper">
+    <nav class="category-tabs" id="categoryTabs">
+      <button class="tab-btn active" data-cat="all">전체 보기 <span class="tab-count" id="totalCount">0</span></button>
+    </nav>
+  </div>
+
+  <main>
+    <div class="stats-bar">
+      <div>현재 표시된 레시피: <strong id="visibleCount">0</strong>개</div>
+      <div class="view-controls">
+        <button class="toggle-all-btn" id="toggleImagesBtn">대표 이미지 숨기기</button>
+      </div>
+    </div>
+
+    <div id="recipeContainer"></div>
+
+    <div class="empty-state" id="emptyState">
+      <h3>일치하는 레시피가 없습니다</h3>
+      <p>다른 재료명이나 요리 이름으로 다시 검색해 보세요.</p>
+    </div>
+  </main>
+
+  <footer>
+    레시피.pdf 기반 개인 요리 아카이브 · 오프라인 단독 실행 지원 HTML
+  </footer>
+
+  <script>
+    // SVG 데이터 URI 생성기 (외부 네트워크 끊김 없이 선명한 일러스트 대표 이미지 제공)
+    function makeFoodIllustration(bg1, bg2, emoji, label) {
+      const svg = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="600" height="340" viewBox="0 0 600 340">
+          <defs>
+            <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="${bg1}"/>
+              <stop offset="100%" stop-color="${bg2}"/>
+            </linearGradient>
+          </defs>
+          <rect width="600" height="340" fill="url(#g)"/>
+          <circle cx="510" cy="60" r="95" fill="rgba(255,255,255,0.08)"/>
+          <circle cx="90" cy="290" r="110" fill="rgba(255,255,255,0.07)"/>
+          <circle cx="300" cy="148" r="76" fill="rgba(255,255,255,0.18)"/>
+          <text x="300" y="168" font-size="74" text-anchor="middle" dominant-baseline="middle">${emoji}</text>
+          <text x="300" y="266" font-family="sans-serif" font-size="22" font-weight="700" fill="rgba(255,255,255,0.92)" text-anchor="middle" letter-spacing="1">${label}</text>
+        </svg>`;
+      return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg.trim());
+    }
+
+    const recipeData = [
+      {
+        id: "cat-1",
+        num: "CATEGORY 01",
+        title: "밥·한 그릇 식사",
+        desc: "볶음밥, 솥밥, 덮밥, 비빔밥까지 든든하게 한 끼를 완성하는 메인 밥 요리",
+        image: makeFoodIllustration("#d97724", "#9a4412", "🍚", "RICE & ONE-BOWL MEALS"),
+        recipes: [
+          {
+            name: "마늘 볶음밥 (2인분)",
+            tag: "볶음밥",
+            emoji: "🧄",
+            colors: ["#e08a3c", "#a34d14"],
+            ingredients: "밥 2공기(400g), 통마늘 7개(35g), 간 마늘 1큰술(20g), 스틱버터 1큰술(12g), 맛소금 1/4큰술(3.5g), 진간장 2큰술(20g), 식용유 5큰술(35g)",
+            steps: [
+              "통마늘을 으깨 다지고 간 마늘은 키친타월로 물기를 뺍니다.",
+              "팬에 식용유를 두르고 마늘을 중불에서 볶다가 노릇해지면 불을 줄입니다.",
+              "진간장을 기름 쪽에 눌리듯 볶고 불을 끈 뒤 맛소금과 밥을 고루 섞습니다.",
+              "버터를 넣고 강불에서 골고루 볶아 완성합니다."
+            ]
+          },
+          {
+            name: "피씨방 김치볶음밥",
+            tag: "볶음밥",
+            emoji: "🍳",
+            colors: ["#d94e34", "#8f2414"],
+            ingredients: "밥, 대파, 스팸, 김치, 고춧가루 1, 설탕 1/2, 간장 1, 다시다 1/2, 마요네즈 1, 참기름, 달걀",
+            steps: [
+              "파기름에 스팸과 김치를 볶다가 고춧가루 1, 설탕 1/2을 넣고 약불에 볶습니다.",
+              "간장 1을 팬 가장자리에 태우듯 두르고 밥을 넣어 섞습니다.",
+              "다시다 1/2과 마요네즈 1을 넣어 볶은 뒤 참기름과 반숙 계란으로 마무리합니다."
+            ]
+          },
+          {
+            name: "영양 솥밥",
+            tag: "솥밥",
+            emoji: "🍲",
+            colors: ["#6b8e4e", "#3d5928"],
+            ingredients: "쌀, 완두콩, 당근, 표고버섯, 구운 생선살, 밥물(다시마간장 1 : 맛술 1 : 물 1 : 청주 1)",
+            steps: [
+              "완두콩과 당근을 섞고 밥물(다시마간장 1 : 맛술 1 : 물 1 : 청주 1)을 맞춥니다.",
+              "표고버섯을 올려 솥밥을 지은 후 구운 생선살 등을 곁들여 비벼 먹습니다."
+            ]
+          },
+          {
+            name: "부타동 (타레 소스)",
+            tag: "덮밥",
+            emoji: "🥩",
+            colors: ["#8c4a27", "#4f230d"],
+            ingredients: "삼겹살, 밥, 간장, 미림, 청주, 물, 다시마, 가쓰오부시, 설탕물, 마늘 3알, 후추 1t",
+            steps: [
+              "간장·미림·청주·물이 끓으면 불을 끄고 다시마와 가쓰오부시를 넣어 식힙니다.",
+              "설탕물을 카라멜라이징하다 갈색빛이 돌면 식힌 소스와 마늘 3알을 넣고 끓인 뒤 후추 1t를 넣습니다.",
+              "삼겹살을 굽다 타레 소스를 발라 토치로 구워 밥 위에 올립니다."
+            ]
+          },
+          {
+            name: "부추된장비빔밥",
+            tag: "비빔밥",
+            emoji: "🥗",
+            colors: ["#528249", "#2c4f26"],
+            ingredients: "밥, 무생채(소금 1, 설탕 4, 고추 1/2, 식초 3), 부추무침(고춧가루 1, 소금 1, 설탕 1, 참기름 2), 된장찌개(바지락, 말린해삼, 새우, 키조개, 재래식+미소된장)",
+            steps: [
+              "새콤달콤하게 무친 무생채와 향긋한 부추무침을 준비합니다.",
+              "해산물과 재래식·미소된장을 섞어 끓인 된장찌개를 곁들여 밥과 함께 비벼 먹습니다."
+            ]
+          }
+        ]
+      },
+      {
+        id: "cat-2",
+        num: "CATEGORY 02",
+        title: "국·찌개·전골",
+        desc: "진한 국물 맛의 짜글이·된장찌개부터 전골, 시원한 냉국·온육수까지",
+        image: makeFoodIllustration("#c84b31", "#7a2312", "🥘", "SOUPS, STEWS & HOT POTS"),
+        recipes: [
+          {
+            name: "감자짜글이",
+            tag: "찌개·짜글이",
+            emoji: "🥔",
+            colors: ["#cf5736", "#872a12"],
+            ingredients: "감자 2개(400g), 통조림햄 1캔(200g), 양파 1/2개, 대파 1컵, 청양고추 3개, 간마늘 1큰술, 된장 1/2큰술, 고추장 1큰술, 굵은고춧가루 2큰술, 설탕 1큰술, 진간장 4큰술, 물 4컵(700g)",
+            steps: [
+              "감자·양파는 채 썰고 햄은 비닐팩에 넣어 으깹니다.",
+              "냄비에 감자, 양파, 대파, 고추, 햄, 양념과 물을 넣고 끓입니다.",
+              "끓어오르면 약불로 줄여 국물이 반으로 졸아들고 감자가 으깨질 때까지 끓입니다."
+            ]
+          },
+          {
+            name: "고깃집 스타일 된장찌개",
+            tag: "찌개",
+            emoji: "🍲",
+            colors: ["#9e5b2b", "#5c3010"],
+            ingredients: "된장 3, 쌈장 3, 고추장 1, 물 2컵, 애호박 1/4, 양파 1/4, 두부 1/2, 팽이버섯, 대파, 다시다 1/2T, 차돌박이 등 고기, 식용유",
+            steps: [
+              "식용유에 된장 3, 쌈장 3을 볶다 고추장 1을 넣고 함께 볶습니다.",
+              "물 2컵을 붓고 끓으면 애호박, 양파, 두부, 팽이버섯, 대파, 다시다 1/2T, 차돌박이를 넣어 끓입니다."
+            ]
+          },
+          {
+            name: "닭전골",
+            tag: "전골",
+            emoji: "🍲",
+            colors: ["#d4943a", "#8a5815"],
+            ingredients: "닭 정육 400g, 양배추 1/4통, 물 500ml, 치킨스톡 1스푼, 편마늘 한 줌, 청양고추, 참소스 또는 폰즈, 우동사리(선택)",
+            steps: [
+              "닭 정육 400g을 구워 빼두고, 남은 기름에 양배추 1/4통을 큼직하게 볶습니다.",
+              "물 500ml와 치킨스톡 1스푼을 넣고 끓인 뒤, 구운 닭, 편마늘, 청양고추를 넣습니다.",
+              "양배추 숨이 죽으면 참소스나 폰즈에 찍어 먹고 우동사리를 추가해 즐깁니다."
+            ]
+          },
+          {
+            name: "미역냉국",
+            tag: "냉국",
+            emoji: "🧊",
+            colors: ["#2e867d", "#164d47"],
+            ingredients: "불린 미역 1.5컵(건미역 13g), 양파 1/2개, 청양고추 2개, 홍고추 1개, 다진 마늘 1큰술, 식초 1/2컵, 설탕 2.5큰술, 액젓 2큰술, 국간장 6큰술, 물 3컵, 얼음 20개, MSG 1/3큰술(선택)",
+            steps: [
+              "불려 짠 미역에 식초와 설탕을 넣어 버무리고 액젓, 국간장 절반을 섞습니다.",
+              "채 썬 양파와 고추를 버무린 후 물과 남은 국간장(기호에 따라 MSG 1/3큰술), 얼음을 섞어 완성합니다."
+            ]
+          },
+          {
+            name: "냉면 온육수",
+            tag: "육수",
+            emoji: "🥣",
+            colors: ["#b58954", "#6e4e27"],
+            ingredients: "물 1L, 냉면다시다 1T, 설탕 1/2T, 후춧가루",
+            steps: [
+              "물 1L에 냉면다시다 1T, 설탕 1/2T, 후춧가루를 넣고 팔팔 끓여 완성합니다."
+            ]
+          }
+        ]
+      },
+      {
+        id: "cat-3",
+        num: "CATEGORY 03",
+        title: "면류 및 분식",
+        desc: "불맛 나는 짬뽕라면부터 국물·기름 떡볶이, 이색 그릇 샤오롱바오까지",
+        image: makeFoodIllustration("#d64535", "#8a1f14", "🍜", "NOODLES & STREET SNACKS"),
+        recipes: [
+          {
+            name: "고기짬뽕라면",
+            tag: "면류",
+            emoji: "🍜",
+            colors: ["#c93b2b", "#78180d"],
+            ingredients: "돼지 후지 1컵(150g), 라면 1개, 달걀 1개, 대파 2/3컵, 양파 1/2컵, 양배추 1/2컵, 당근 1/3컵, 애호박 1/2컵, 고운·굵은 고춧가루 각 1큰술, 소고기다시다 1/2큰술, 소금 1/5큰술, 진간장 1큰술, 식용유 2큰술, 물 600ml, 후추",
+            steps: [
+              "기름에 고기와 대파를 볶다 채소를 넣고 함께 볶습니다.",
+              "볶은 채소를 한쪽으로 몰아두고 간장을 눌린 뒤 고춧가루를 섞어 물을 붓습니다.",
+              "라면스프, 다시다, 소금을 넣고 끓으면 면과 달걀을 익혀 후추로 마무리합니다."
+            ]
+          },
+          {
+            name: "국물 떡볶이",
+            tag: "분식",
+            emoji: "🌶️",
+            colors: ["#d93829", "#87190e"],
+            ingredients: "밀떡 500g, 어묵 4~5장, 대파, 물 600ml, 밑국물(설탕 1T, 소금 1/3T, 다진마늘 1/2T), 양념장(고춧가루 4, 설탕 3, 간장 2, 굴소스 2, 고추장 2)",
+            steps: [
+              "대파와 어묵을 깔고 물 600ml, 설탕 1T, 소금 1/3T, 다진마늘 1/2T를 넣어 뚜껑 덮고 1분간 우립니다.",
+              "중불에 떡을 넣어 2분간 끓인 뒤 양념장을 풀고 약불에서 4분 이상 졸입니다."
+            ]
+          },
+          {
+            name: "기름떡볶이",
+            tag: "분식",
+            emoji: "🔥",
+            colors: ["#c44b27", "#75250d"],
+            ingredients: "떡, 대파 1C, 다진 마늘 1T, 설탕 1T, 간장 2T, 참기름 1T, 식용유 1T, 표고버섯, 고춧가루",
+            steps: [
+              "대파 1C, 다진 마늘 1T, 설탕 1T, 간장 2T, 참기름 1T, 식용유 1T를 두르고 수분 없이 약불로 볶습니다.",
+              "다진 표고버섯과 떡을 넣어 볶다가 마지막에 고춧가루를 추가해 버무립니다."
+            ]
+          },
+          {
+            name: "그릇 버전 샤오롱바오",
+            tag: "딤섬·분식",
+            emoji: "🥟",
+            colors: ["#b88b58", "#6e4e2a"],
+            ingredients: "다진 양파 1/2개, 돼지민찌 100g, 다진 생강 1/2T, 다진 파 1T, 치킨스톡 1/2T, 간장 1/2T, 후추 1/3T, 소금 1꼬집, 시판 만두피",
+            steps: [
+              "다진 양파, 돼지민찌, 다진 생강, 다진 파, 치킨스톡, 간장, 후추, 소금을 치대어 만두소를 만듭니다.",
+              "머그컵에 소를 담고 시판 만두피로 덮어 찜기에서 15분간 쪄냅니다."
+            ]
+          }
+        ]
+      },
+      {
+        id: "cat-4",
+        num: "CATEGORY 04",
+        title: "고기 요리 (돼지고기·소고기)",
+        desc: "제육·삼겹살 구이부터 보쌈·수육·족발, 막창, 소고기 육전까지 총망라",
+        image: makeFoodIllustration("#8f3524", "#4d170d", "🥓", "PORK & BEEF SPECIALTIES"),
+        recipes: [
+          {
+            name: "앞다리살 제육 (버전 1)",
+            tag: "제육·삼겹살",
+            emoji: "🥩",
+            colors: ["#c44127", "#731e0d"],
+            ingredients: "앞다리살 600g, 양파 2개, 마늘 10톨, 양념(식용유 3T, 고추장 5T, 맛술 2T, 물엿 2T, 설탕 1T, 간장 2T, 후추 1T, 굵은고춧가루 4T, 매실청 1T)",
+            steps: [
+              "마늘과 앞다리살을 먼저 볶다가 준비한 양념과 양파를 넣어 중불에서 볶아냅니다."
+            ]
+          },
+          {
+            name: "숙성 삼겹 제육 (버전 2)",
+            tag: "제육·삼겹살",
+            emoji: "🥓",
+            colors: ["#b53824", "#66180c"],
+            ingredients: "삼겹살 600g, 밑간(다진 마늘 2, 진간장 3, 후추), 양념장(고춧가루 7, 양파즙 2, 진간장 4, 다진마늘 2, 소주 1, 참기름), 채소",
+            steps: [
+              "삼겹살 600g에 다진 마늘 2, 진간장 3, 후추로 밑간해 숙성합니다.",
+              "양념장을 미리 섞어 숙성한 뒤 고기를 굽다가 양념 반을 먼저 코팅하고, 채소와 남은 양념을 넣어 볶습니다."
+            ]
+          },
+          {
+            name: "문츠 고추장삼겹살",
+            tag: "제육·삼겹살",
+            emoji: "🔥",
+            colors: ["#ba3c22", "#6b1c0c"],
+            ingredients: "삼겹살 600g, 고추장 3T, 조청 1.5T, 고운고춧가루 0.8T, 매실청 1T, 간장 0.5T, 다진마늘 1T, 후추 1.3g, 마요네즈 1.5T",
+            steps: [
+              "분량의 양념(마요네즈 포함)을 모두 섞어 삼겹살에 버무린 뒤 타지 않게 구워냅니다."
+            ]
+          },
+          {
+            name: "대패삼겹살 두루치기",
+            tag: "제육·삼겹살",
+            emoji: "🥬",
+            colors: ["#b84f28", "#69270e"],
+            ingredients: "대패삼겹살, 마늘, 간장소스(물 1 : 간장 1 : 맛술 1), 파채, 초고추장(고추장 2, 설탕 1.5, 식초 4, 고춧가루 2, 참기름)",
+            steps: [
+              "대패삼겹살과 마늘을 굽다 간장소스(물 1 : 간장 1 : 맛술 1)를 부어 조립니다.",
+              "초고추장에 버무린 파채를 고기 위에 올려 숨을 죽여 섞어 먹습니다."
+            ]
+          },
+          {
+            name: "통삼겹 마늘보쌈",
+            tag: "수육·보쌈·족발",
+            emoji: "🧄",
+            colors: ["#8c5832", "#4d2c14"],
+            ingredients: "통삼겹, 막걸리 1병, 간장 40ml, 마늘소스(절여 짠 양배추 50g, 다진 마늘 3T, 물엿 1T, 설탕 1T)",
+            steps: [
+              "통삼겹 표면을 마이야르 반응이 나게 구운 후, 막걸리 1병과 간장 40ml를 넣고 40분간 약불에 졸입니다.",
+              "절여서 물기를 짠 양배추 50g에 다진 마늘 3T, 물엿 1T, 설탕 1T를 섞어 전자레인지에 2분 돌린 마늘소스를 얹습니다."
+            ]
+          },
+          {
+            name: "오겹살 수육 & 견과류 쌈장",
+            tag: "수육·보쌈·족발",
+            emoji: "🍖",
+            colors: ["#7d4c2d", "#422411"],
+            ingredients: "오겹살, 구운 대파·양파·마늘, 사과 1/2, 된장 3, 진간장 2, 맛술 4, 월계수잎, 통후추 / 쌈장(된장 3, 고추장 1, 다진마늘 0.5, 고춧가루 0.5, 사이다 3, 콩가루 2, 참기름 1, 아몬드 분태)",
+            steps: [
+              "오겹살 표면을 굽고 구운 대파·양파·마늘, 사과 1/2, 된장 3, 진간장 2, 맛술 4, 월계수잎, 통후추를 넣고 30~40분간 삶습니다.",
+              "쌈장 재료를 고루 섞어 견과류 쌈장을 곁들입니다."
+            ]
+          },
+          {
+            name: "간편 족발",
+            tag: "수육·보쌈·족발",
+            emoji: "🍗",
+            colors: ["#6e3921", "#38190b"],
+            ingredients: "통 앞다리살, 월계수잎, 정향 2알, 팔각 3개, 생강 2톨, 오향분말 1T, 미원 1T, 다시다 1/2C, 설탕 2.5C, 카라멜색소 3T",
+            steps: [
+              "냄비에 통 앞다리살과 모든 향신료·양념 재료를 넣고 약불에서 1.5시간 삶습니다.",
+              "불을 끄고 뚜껑을 덮은 채 15분간 뜸을 들인 뒤 썰어냅니다."
+            ]
+          },
+          {
+            name: "대파막창",
+            tag: "기타 육류",
+            emoji: "🔥",
+            colors: ["#9c4e2b", "#542510"],
+            ingredients: "해동 막창, 대파, 소스(쌈장, 물, 청양고추, 콩가루)",
+            steps: [
+              "해동한 막창 속에 대파를 통째로 끼워 넣고 에어프라이어 200도에서 35분, 뒤집어 20분 조리 후 팬에 살짝 굽습니다.",
+              "쌈장에 물, 청양고추, 콩가루를 섞은 특제 소스를 곁들입니다."
+            ]
+          },
+          {
+            name: "소고기 육전",
+            tag: "기타 육류",
+            emoji: "🍳",
+            colors: ["#b57c38", "#664117"],
+            ingredients: "소고기, 채소, 달걀물, 표고버섯",
+            steps: [
+              "소고기를 센 불에 볶다 채소를 함께 볶습니다.",
+              "팬에 달걀물을 얇게 깔아 약불에 부치다 볶은 재료와 표고버섯을 올려 뒤집어 굽습니다."
+            ]
+          },
+          {
+            name: "고기된장",
+            tag: "기타 육류",
+            emoji: "🥘",
+            colors: ["#8a5429", "#4a2910"],
+            ingredients: "삼겹살 300g, 맛술 2T, 대파, 고춧가루 1T, 된장 2T, 설탕 1/2T, 물 100ml, 다진 마늘 1T, 참기름",
+            steps: [
+              "삼겹살 300g을 굽다 맛술 2T, 대파를 넣고 볶습니다.",
+              "고춧가루 1T, 된장 2T, 설탕 1/2T를 볶은 후 물 100ml와 다진 마늘 1T를 넣고 졸여 참기름으로 마무리합니다."
+            ]
+          }
+        ]
+      },
+      {
+        id: "cat-5",
+        num: "CATEGORY 05",
+        title: "닭고기 요리",
+        desc: "오븐 구이부터 에어프라이어 윙봉, 바삭한 전분 프라이드 치킨까지",
+        image: makeFoodIllustration("#d67a28", "#87440c", "🍗", "CHICKEN & WINGS"),
+        recipes: [
+          {
+            name: "매운 닭다리살 구이",
+            tag: "닭구이",
+            emoji: "🌶️",
+            colors: ["#c93e28", "#751c0e"],
+            ingredients: "닭다리살 1kg, 우유 700ml, 고추장 4T, 고춧가루 3T, 양조간장 3T, 매실액 2T, 물엿 2T, 다진마늘 2T, 다진생강 1t, 맛술 1T, 후추 1t",
+            steps: [
+              "닭다리살을 우유 700ml에 재워 잡내를 제거한 뒤 물기를 뺍니다.",
+              "분량의 매운 양념장에 재워 팬이나 오븐에 속까지 촉촉하게 구워냅니다."
+            ]
+          },
+          {
+            name: "굽네 스타일 오븐 치킨",
+            tag: "오븐 치킨",
+            emoji: "🍗",
+            colors: ["#a85327", "#5c270c"],
+            ingredients: "칼집 낸 닭다리살 1kg, 간장 180ml, 청주 50ml, 물엿 50ml, 설탕 4T, 마늘가루 4T, 후추",
+            steps: [
+              "칼집 낸 닭다리살 1kg을 양념에 1시간 동안 재웁니다.",
+              "오븐 180도에서 20분 굽고, 190도로 올려 10분간 노릇하게 굽습니다."
+            ]
+          },
+          {
+            name: "교촌 스타일 윙봉",
+            tag: "에어프라이어",
+            emoji: "🍯",
+            colors: ["#bd7528", "#6b3e0d"],
+            ingredients: "윙봉, 튀김가루 4스푼, 식용유 6~8스푼, 소스(간장 2, 식초 2, 물 2, 설탕 2, 꿀 1/2)",
+            steps: [
+              "가볍게 밑간한 윙봉에 튀김가루 4스푼, 식용유 6~8스푼을 봉지에 넣고 흔듭니다.",
+              "에어프라이어 180도 15분, 뒤집어 10분 조리한 뒤 한소끔 끓인 간장 꿀 소스에 버무립니다."
+            ]
+          },
+          {
+            name: "전분 프라이드 치킨",
+            tag: "튀김 치킨",
+            emoji: "🍗",
+            colors: ["#d99426", "#85550a"],
+            ingredients: "닭 정육 500g, 소금 2꼬집, 간장 2, 간마늘 1, 식용유 3컵, 전분 1컵",
+            steps: [
+              "닭 정육 500g을 소금 2꼬집, 간장 2, 간마늘 1에 염지합니다.",
+              "식용유 3컵에 전분 1컵을 풀어 불을 켜고, 전분이 뭉치기 시작하면 닭을 넣어 5~7분 그대로 두었다가 뒤집어 5분간 튀깁니다."
+            ]
+          }
+        ]
+      },
+      {
+        id: "cat-6",
+        num: "CATEGORY 06",
+        title: "해산물 요리",
+        desc: "자숙새우와 칵테일 새우로 뚝딱 만드는 중식·양식 새우 요리 3종",
+        image: makeFoodIllustration("#d95b43", "#8c2b19", "🍤", "SEAFOOD & SHRIMP"),
+        recipes: [
+          {
+            name: "마늘 버터 새우구이",
+            tag: "새우 3종",
+            emoji: "🧈",
+            colors: ["#d99326", "#85540a"],
+            ingredients: "자숙새우 1컵, 다진 마늘 1.5T, 버터, 액젓 1T, 식용유",
+            steps: [
+              "자숙새우 1컵과 다진 마늘 1.5T를 기름에 눌리듯 볶다가 버터와 액젓 1T를 넣어 감칠맛을 살려 마무리합니다."
+            ]
+          },
+          {
+            name: "칠리새우",
+            tag: "새우 3종",
+            emoji: "🌶️",
+            colors: ["#cf3b27", "#7a190c"],
+            ingredients: "새우 1컵, 기름 3, 마늘 1, 케첩 2, 고춧가루 1, 설탕 1, 간장 1, 식초 1, 물 약간, 버터 1",
+            steps: [
+              "기름 3, 마늘 1, 새우 1컵을 먼저 볶습니다.",
+              "케첩 2, 고춧가루 1, 설탕 1, 간장 1, 식초 1, 물 약간, 버터 1을 넣고 윤기 나게 졸입니다."
+            ]
+          },
+          {
+            name: "크림새우",
+            tag: "새우 3종",
+            emoji: "🍤",
+            colors: ["#c98d49", "#784e1e"],
+            ingredients: "새우, 튀김가루 1컵, 물 1/2컵, 소스(마요네즈 4T, 설탕 2T, 식초 1T), 레몬즙",
+            steps: [
+              "튀김가루 1컵, 물 1/2컵 반죽을 입혀 새우를 바삭하게 튀깁니다.",
+              "마요네즈 4T, 설탕 2T, 식초 1T를 약불에 살짝 녹인 소스에 튀긴 새우를 버무리고 레몬즙을 뿌립니다."
+            ]
+          }
+        ]
+      },
+      {
+        id: "cat-7",
+        num: "CATEGORY 07",
+        title: "채소·절임 및 밑반찬",
+        desc: "오이무침, 겉절이, 장아찌·라페부터 일본식 달걀말이·건두부 반찬까지",
+        image: makeFoodIllustration("#3f8c4f", "#1e5229", "🥒", "VEGETABLES, PICKLES & SIDES"),
+        recipes: [
+          {
+            name: "오이안주 (오이탕탕)",
+            tag: "오이 절임·무침",
+            emoji: "🥒",
+            colors: ["#3a8f4c", "#1b5427"],
+            ingredients: "오이 2개, 절임물(물 1L, 소금 30g, MSG 5g), 양념장(참기름 100g, 소금 5g, MSG 5g, 다진마늘 20g), 고춧가루, 깨",
+            steps: [
+              "오이 2개에 칼집을 내고 절임물(물 1L, 소금 30g, MSG 5g)에 30분 절입니다.",
+              "물기를 닦아 썰고 양념장(참기름 100g, 소금 5g, MSG 5g, 다진마늘 20g)과 고춧가루, 깨를 올립니다."
+            ]
+          },
+          {
+            name: "데친 오이무침",
+            tag: "오이 절임·무침",
+            emoji: "🥗",
+            colors: ["#4a9452", "#24572a"],
+            ingredients: "오이, 소금 1, 설탕 0.5T, 부추 (무·당근 사용 금지)",
+            steps: [
+              "어슷 썬 오이를 끓는 물에 1분간 데쳐 찬물에 식힌 뒤, 소금 1, 설탕 0.5T에 15분 절여 헹굽니다.",
+              "부추를 썰어 함께 가볍게 무칩니다 (무, 당근은 넣지 않습니다)."
+            ]
+          },
+          {
+            name: "봄동 겉절이",
+            tag: "겉절이·생채",
+            emoji: "🥬",
+            colors: ["#639638", "#355718"],
+            ingredients: "봄동 1포기, 고춧가루 3, 매실청 2, 설탕 1, 멸치액젓 2, 참치액 1, 참기름 1, 다진마늘 1, 통깨",
+            steps: [
+              "먹기 좋게 썬 봄동 1포기에 분량의 양념 재료를 모두 넣고 살살 버무립니다."
+            ]
+          },
+          {
+            name: "겨울 무생채",
+            tag: "겉절이·생채",
+            emoji: "🌶️",
+            colors: ["#cf4830", "#7d2010"],
+            ingredients: "채 썬 무, 고춧가루 5, 설탕 4, 식초 3, 간장 2, 까나리액젓 1, 다진 파, 천일염 1/2",
+            steps: [
+              "채 썬 무에 고춧가루로 먼저 색을 입힌 뒤 나머지 양념과 다진 파를 넣어 아삭하게 무칩니다."
+            ]
+          },
+          {
+            name: "파절이",
+            tag: "겉절이·생채",
+            emoji: "🧅",
+            colors: ["#4e8a42", "#274f1f"],
+            ingredients: "파채 2줌, 간장 2, 미림 2, 고춧가루 2, 설탕 1, 물엿 1, 참기름 1, 참깨",
+            steps: [
+              "찬물에 헹궈 물기를 뺀 파채 2줌에 분량의 양념을 넣고 고기 먹기 직전에 무칩니다."
+            ]
+          },
+          {
+            name: "튀긴 메추리알 조림",
+            tag: "조림·장아찌",
+            emoji: "🥚",
+            colors: ["#8f5729", "#4f2c0f"],
+            ingredients: "메추리알, 통마늘, 꽈리고추, 간장물(물 3C, 진간장 1C, 설탕 1/2C, 물엿 1/2C), 식용유",
+            steps: [
+              "메추리알과 통마늘을 기름에 튀기듯 볶다 구멍 낸 꽈리고추를 넣습니다.",
+              "간장물(물 3C, 진간장 1C, 설탕 1/2C, 물엿 1/2C)을 넣고 약불에서 2컵 분량이 될 때까지 졸입니다."
+            ]
+          },
+          {
+            name: "양파장아찌",
+            tag: "조림·장아찌",
+            emoji: "🧅",
+            colors: ["#7d432a", "#421f10"],
+            ingredients: "양파, 마늘쫑, 절임물(물 1C, 간장 1C, 설탕 1C, 식초 1/2C)",
+            steps: [
+              "절임물(물 1C, 간장 1C, 설탕 1C, 식초 1/2C)을 설탕이 녹을 때까지만 끓입니다.",
+              "손질한 양파와 마늘쫑에 붓고 2~3일 숙성합니다."
+            ]
+          },
+          {
+            name: "당근라페",
+            tag: "서양식 절임",
+            emoji: "🥕",
+            colors: ["#e06d24", "#8f3d0b"],
+            ingredients: "채 썬 당근 2개, 소금, 설탕 1, 레몬즙 1, 올리브유 2, 홀그레인 머스터드 1.5, 후추",
+            steps: [
+              "채 썬 당근 2개를 소금에 15분 절여 물기를 꼭 짭니다.",
+              "설탕 1, 레몬즙 1, 올리브유 2, 홀그레인 머스터드 1.5, 후추를 섞어 냉장고에서 하루 숙성합니다."
+            ]
+          },
+          {
+            name: "토마토 절임",
+            tag: "서양식 절임",
+            emoji: "🍅",
+            colors: ["#d93b3b", "#821818"],
+            ingredients: "토마토, 소금 2/3T, 설탕 7T, 식초 11T",
+            steps: [
+              "토마토에 뜨거운 물을 10분간 부었다가 물을 따라내고 껍질을 벗깁니다.",
+              "소금 2/3T, 설탕 7T, 식초 11T를 2분간 팔팔 끓여 병에 부은 뒤 냉장고에서 2~3일 숙성합니다."
+            ]
+          },
+          {
+            name: "일본식 달걀말이",
+            tag: "계란·두부 반찬",
+            emoji: "🥚",
+            colors: ["#dba125", "#8a600b"],
+            ingredients: "달걀 6개, 설탕, 소금, 맛술, 가쓰오다시 육수(다시마+가쓰오부시) 3큰술~반컵",
+            steps: [
+              "찬물에 다시마를 끓이다 가쓰오부시를 넣어 우린 육수 3큰술~반컵과 달걀 6개, 설탕, 소금, 맛술을 섞어 체에 거릅니다.",
+              "약불에서 달걀물을 여러 번 나누어 부어가며 도톰하게 말아 부칩니다."
+            ]
+          },
+          {
+            name: "대파에그마요",
+            tag: "계란·두부 반찬",
+            emoji: "🥚",
+            colors: ["#c99f38", "#785b15"],
+            ingredients: "삶은 달걀 3개, 올리브유 3T, 식초 1.5T, 소금, 디종 머스터드 1t, 후추, 다진 대파",
+            steps: [
+              "삶은 달걀 3개, 올리브유 3T, 식초 1.5T, 소금, 디종 머스터드 1t, 후추를 곱게 갑니다.",
+              "다진 대파를 섞어 냉장 보관하며 빵이나 크래커에 곁들입니다."
+            ]
+          },
+          {
+            name: "건두부 무침",
+            tag: "계란·두부 반찬",
+            emoji: "🥢",
+            colors: ["#c9512c", "#78260e"],
+            ingredients: "건두부, 고추기름 2T(양파·생강·고수 튀긴 기름), 소금 1t, 설탕 1t, MSG 1t, 큐민 1t",
+            steps: [
+              "건두부에 양파·생강·고수를 튀겨 낸 향미 고추기름 2T와 소금, 설탕, MSG, 큐민 각 1t를 넣어 버무립니다."
+            ]
+          },
+          {
+            name: "쪽파 숙채",
+            tag: "채소 반찬",
+            emoji: "🌱",
+            colors: ["#418548", "#1d4d22"],
+            ingredients: "쪽파, 유장(국간장 1 : 참기름 1, 다진마늘 1/2T, 조미료 약간)",
+            steps: [
+              "쪽파를 끓는 물에 데쳐 얼음물에 식힌 뒤 물기를 뺍니다.",
+              "유장 양념에 가볍게 버무려 한입 크기로 돌돌 묶어 냅니다."
+            ]
+          }
+        ]
+      },
+      {
+        id: "cat-8",
+        num: "CATEGORY 08",
+        title: "양념장·디핑 소스",
+        desc: "만능 국수장, 치킨·탄탄멘 소스, 육회 양념, 백숙 소스 3종 & 깻잎 페스토",
+        image: makeFoodIllustration("#b8432e", "#661b0e", "🥫", "SAUCES, DIPS & MARINADES"),
+        recipes: [
+          {
+            name: "비빔 국수장",
+            tag: "면 양념장",
+            emoji: "🍜",
+            colors: ["#cf3b27", "#7a190c"],
+            ingredients: "고추장 1/3컵, 양조식초 4T, 황설탕 3T, 진간장 1T, 고춧가루 1/2T, 간마늘 1T",
+            steps: [
+              "모든 재료를 잘 섞어 하루 정도 숙성하면 소면이나 쫄면에 찰떡인 만능 비빔장이 됩니다."
+            ]
+          },
+          {
+            name: "간장 비빔국수 양념",
+            tag: "면 양념장",
+            emoji: "🥢",
+            colors: ["#7d4c2d", "#422411"],
+            ingredients: "간장 2.5, 설탕 1, 고춧가루 1, 참기름 1, 통깨",
+            steps: [
+              "담백하고 고소한 간장 베이스 비빔국수 양념으로, 삶은 면에 바로 비벼 먹습니다."
+            ]
+          },
+          {
+            name: "지코바 스타일 치킨 양념",
+            tag: "치킨·고기 소스",
+            emoji: "🍗",
+            colors: ["#9e2b1e", "#541109"],
+            ingredients: "스테이크소스 3, 스리라차 3, 진간장 1, 올리고당 1, 고춧가루 1, 다진마늘 1, 후추, 굴소스 1(선택)",
+            steps: [
+              "구운 닭고기나 치킨에 버무려 살짝 졸여내면 숯불 양념치킨 풍미가 살아납니다."
+            ]
+          },
+          {
+            name: "탄탄멘 소스",
+            tag: "중식 소스",
+            emoji: "🥜",
+            colors: ["#b56c28", "#66380d"],
+            ingredients: "땅콩버터 2, 간장 2, 설탕 2, 참기름 2, 깨 1, 굴소스 1, 라면스프 1, 다진마늘 1",
+            steps: [
+              "모든 재료를 고루 개어 끓는 물이나 육수에 풀어 면을 말아 먹습니다."
+            ]
+          },
+          {
+            name: "육회·낙지탕탕이 양념",
+            tag: "생식 양념",
+            emoji: "🥩",
+            colors: ["#8c3827", "#4d190e"],
+            ingredients: "진간장 2T, 설탕 1T, 매실청 1T, 참기름 1T, 다진마늘 1T, 맛소금 약간",
+            steps: [
+              "설탕이 녹을 때까지 잘 섞어 신선한 육회나 산낙지에 가볍게 버무립니다."
+            ]
+          },
+          {
+            name: "튀김 디핑소스",
+            tag: "디핑 소스",
+            emoji: "🍟",
+            colors: ["#cf6436", "#7d3314"],
+            ingredients: "마요네즈 1/2컵, 케첩 1/4컵, 마늘가루 1/2t, 우스터 1/4t, 후추 1/2t",
+            steps: [
+              "감자튀김, 치킨, 양파링 등 각종 튀김류에 어울리는 감칠맛 디핑소스입니다."
+            ]
+          },
+          {
+            name: "삶은 닭 소스 3종 (유자미소·참깨·매실꿀)",
+            tag: "백숙·수육 소스",
+            emoji: "🍋",
+            colors: ["#c79b2c", "#75580e"],
+            ingredients: "① 유자미소: 유자과즙 2T, 백된장 3T, 국간장 1/2T, 식용유 1T, 후추 / ② 참깨소스: 참깨페이스트 3T, 설탕·간장·식초 각 1T, 볶은참깨 1/2T, 고춧가루 약간 / ③ 매실꿀소스: 다진 매실절임 2T, 달걀노른자 1개, 간장 1/2T, 꿀 1/2T, 식용유 1T",
+            steps: [
+              "삶은 닭가슴살이나 백숙, 편육에 취향에 따라 3가지 소스를 곁들여 찍어 먹습니다."
+            ]
+          },
+          {
+            name: "깻잎 페스토",
+            tag: "허브 오일 소스",
+            emoji: "🌿",
+            colors: ["#357a44", "#184522"],
+            ingredients: "깻잎 20장, 올리브유 200ml, 마늘 2개, 아몬드 3T, 파마산 3T, 소금 1t, 후추 1t",
+            steps: [
+              "모든 재료를 블렌더나 다지기에 넣고 곱게 갈아 파스타, 바게트, 고기 요리에 곁들입니다."
+            ]
+          }
+        ]
+      },
+      {
+        id: "cat-9",
+        num: "CATEGORY 09",
+        title: "양식·브런치 & 디저트",
+        desc: "아웃백 스타일 인기 사이드·파스타부터 달콤한 감자치즈케이크까지",
+        image: makeFoodIllustration("#c98a36", "#784c12", "🍝", "WESTERN, BRUNCH & DESSERT"),
+        recipes: [
+          {
+            name: "투움바 파스타",
+            tag: "아웃백 스타일",
+            emoji: "🍝",
+            colors: ["#cf6f32", "#7d3b11"],
+            ingredients: "새우, 새우밑간(고춧가루 1T, 소주 1T, 올리브유 1T, 후추), 소스(우유 1C, 생크림 1C, 다진 청양고추 1개, 굴소스 1T), 양파, 마늘, 베이컨, 파스타면, 치즈",
+            steps: [
+              "새우는 밑간해 두고 우유, 생크림, 다진 청양고추, 굴소스를 섞어 소스를 준비합니다.",
+              "양파, 마늘, 베이컨을 볶다 소스와 새우를 붓고 끓으면 삶은 면과 치즈를 넣어 농도를 맞춥니다."
+            ]
+          },
+          {
+            name: "오지치즈 후라이",
+            tag: "아웃백 스타일",
+            emoji: "🧀",
+            colors: ["#d99b26", "#85590a"],
+            ingredients: "채 썬 감자, 소스(버터 3T, 우유 1/2C, 다진마늘 2T, 설탕 1T, 마요 3T), 슬라이스 치즈, 구운 베이컨",
+            steps: [
+              "채 썬 감자를 에어프라이어 180도에 20분 굽습니다.",
+              "버터, 우유, 다진마늘, 설탕, 마요네즈를 섞어 전자레인지에 1분 돌린 소스와 슬라이스 치즈, 구운 베이컨을 올립니다."
+            ]
+          },
+          {
+            name: "버터 고구마",
+            tag: "아웃백 스타일",
+            emoji: "🍠",
+            colors: ["#9e4462", "#571d31"],
+            ingredients: "고구마, 꿀, 버터, 치즈",
+            steps: [
+              "고구마를 에어프라이어 180도에 20분 구운 뒤, 가운데를 길게 가릅니다.",
+              "속에 꿀, 버터, 치즈를 듬뿍 넣고 180도에서 5분 더 구워 녹입니다."
+            ]
+          },
+          {
+            name: "허니버터 & 메쉬드 포테이토",
+            tag: "아웃백 스타일",
+            emoji: "🥔",
+            colors: ["#c9a149", "#785c1e"],
+            ingredients: "허니버터(버터 50g, 꿀 2T, 생크림 1T, 소금) / 메쉬드 포테이토(으깬 감자 3개, 생크림 1/2C, 우유 1C, 마요네즈 2T, 설탕 2T)",
+            steps: [
+              "허니버터: 버터 50g에 꿀 2T, 생크림 1T, 소금을 섞어 차갑게 굳힙니다.",
+              "메쉬드 포테이토: 으깬 감자 3개에 생크림, 우유, 마요네즈, 설탕을 넣고 부드럽게 섞어 완성합니다."
+            ]
+          },
+          {
+            name: "크림 스피니치",
+            tag: "사이드 디쉬",
+            emoji: "🥬",
+            colors: ["#47874b", "#204d23"],
+            ingredients: "데친 시금치, 버터 4T, 다진 양파 1C, 다진 마늘 1T, 밀가루 3T, 우유 2C, 파마산 치즈, 넛맥, 소금, 후추",
+            steps: [
+              "데친 시금치의 물기를 꼭 짠 뒤 잘게 썹니다.",
+              "버터 4T에 다진 양파 1C, 다진 마늘 1T를 볶다가 밀가루 3T, 우유 2C를 넣고 걸쭉하게 졸인 뒤 시금치와 파마산 치즈, 넛맥, 소금, 후추를 넣어 완성합니다."
+            ]
+          },
+          {
+            name: "코울슬로",
+            tag: "샐러드",
+            emoji: "🥗",
+            colors: ["#6fa34b", "#395e1f"],
+            ingredients: "다진 양배추, 소금, 생크림, 레몬즙, 후추, 파르미지아노 레지아노 치즈",
+            steps: [
+              "다진 양배추를 소금에 30분 절여 물기를 꽉 짜냅니다.",
+              "생크림, 레몬즙, 후추, 파르미지아노 레지아노 치즈를 넣고 상큼하게 버무립니다."
+            ]
+          },
+          {
+            name: "감자치즈케이크",
+            tag: "디저트",
+            emoji: "🍰",
+            colors: ["#d49a35", "#825912"],
+            ingredients: "감자 2개, 소금, 버터 30g, 달걀 2개, 우유 30ml, 치즈",
+            steps: [
+              "깍둑썬 감자 2개를 소금에 살짝 절여 전자레인지에 6분 돌린 뒤 곱게 으깹니다.",
+              "버터 30g, 달걀 2개, 우유 30ml를 섞어 틀에 담고 180도에서 25분 구운 후 치즈를 얹어 녹입니다."
+            ]
+          }
+        ]
+      }
+    ];
+
+    const tabsEl = document.getElementById("categoryTabs");
+    const containerEl = document.getElementById("recipeContainer");
+    const searchInput = document.getElementById("searchInput");
+    const clearSearchBtn = document.getElementById("clearSearch");
+    const totalCountEl = document.getElementById("totalCount");
+    const visibleCountEl = document.getElementById("visibleCount");
+    const emptyStateEl = document.getElementById("emptyState");
+    const toggleImagesBtn = document.getElementById("toggleImagesBtn");
+
+    let activeCategory = "all";
+    let showImages = true;
+
+    // 초기 탭 및 총 개수 세팅
+    const totalRecipes = recipeData.reduce((acc, cat) => acc + cat.recipes.length, 0);
+    totalCountEl.textContent = totalRecipes;
+
+    recipeData.forEach((cat, idx) => {
+      const btn = document.createElement("button");
+      btn.className = "tab-btn";
+      btn.dataset.cat = cat.id;
+      btn.innerHTML = `${idx + 1}. ${cat.title} <span class="tab-count">${cat.recipes.length}</span>`;
+      tabsEl.appendChild(btn);
+    });
+
+    function renderRecipes() {
+      const keyword = searchInput.value.trim().toLowerCase();
+      containerEl.innerHTML = "";
+      let count = 0;
+
+      recipeData.forEach(cat => {
+        if (activeCategory !== "all" && activeCategory !== cat.id) return;
+
+        const filtered = cat.recipes.filter(r => {
+          if (!keyword) return true;
+          const haystack = [r.name, r.tag, r.ingredients, ...r.steps, cat.title].join(" ").toLowerCase();
+          return haystack.includes(keyword);
+        });
+
+        if (filtered.length === 0) return;
+        count += filtered.length;
+
+        const section = document.createElement("section");
+        section.className = "category-section";
+        section.id = cat.id;
+
+        section.innerHTML = `
+          <div class="category-banner">
+            <div class="category-img-wrap" style="${showImages ? "" : "display:none;"}">
+              <img src="${cat.image}" alt="${cat.title} 대표 이미지" loading="lazy" />
+            </div>
+            <div class="category-info" style="${showImages ? "" : "grid-column: 1 / -1;"}">
+              <span class="category-num">${cat.num} · ${filtered.length}개의 레시피</span>
+              <h2>${cat.title}</h2>
+              <p>${cat.desc}</p>
+            </div>
+          </div>
+          <div class="recipe-grid">
+            ${filtered.map(r => {
+              const thumbSrc = makeFoodIllustration(r.colors[0], r.colors[1], r.emoji, r.name);
+              const stepsHtml = r.steps.length > 1
+                ? `<ol class="steps-list">${r.steps.map(s => `<li>${s}</li>`).join("")}</ol>`
+                : `<p class="single-step">${r.steps[0]}</p>`;
+
+              return `
+                <article class="recipe-card">
+                  ${showImages ? `<img class="card-thumb" src="${thumbSrc}" alt="${r.name}" loading="lazy" />` : ""}
+                  <div class="card-body">
+                    <div class="card-header">
+                      <h3 class="card-title">${r.name}</h3>
+                      <span class="sub-tag">${r.tag}</span>
+                    </div>
+                    <div class="ingredients-box">
+                      <span class="section-label">재료 및 양념</span>
+                      <p class="ingredients-text">${r.ingredients}</p>
+                    </div>
+                    <div class="steps-box">
+                      <span class="section-label">조리법</span>
+                      ${stepsHtml}
+                    </div>
+                  </div>
+                </article>
+              `;
+            }).join("")}
+          </div>
+        `;
+        containerEl.appendChild(section);
+      });
+
+      visibleCountEl.textContent = count;
+      emptyStateEl.style.display = count === 0 ? "block" : "none";
+      clearSearchBtn.classList.toggle("visible", keyword.length > 0);
+    }
+
+    tabsEl.addEventListener("click", (e) => {
+      const btn = e.target.closest(".tab-btn");
+      if (!btn) return;
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      activeCategory = btn.dataset.cat;
+      renderRecipes();
+      window.scrollTo({ top: document.querySelector(".nav-wrapper").offsetTop, behavior: "smooth" });
+    });
+
+    searchInput.addEventListener("input", renderRecipes);
+
+    clearSearchBtn.addEventListener("click", () => {
+      searchInput.value = "";
+      renderRecipes();
+      searchInput.focus();
+    });
+
+    toggleImagesBtn.addEventListener("click", () => {
+      showImages = !showImages;
+      toggleImagesBtn.textContent = showImages ? "대표 이미지 숨기기" : "대표 이미지 보기";
+      renderRecipes();
+    });
+
+    renderRecipes();
+  </script>
+</body>
+</html>
